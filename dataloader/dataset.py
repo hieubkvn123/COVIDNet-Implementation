@@ -114,6 +114,19 @@ class DataLoader:
     def get_val_dataset(self):
         return self.val_dataset
 
+    def get_train_batch(self):
+        try:
+            batch = next(iter(self.train_dataset))
+            return batch
+        except:
+            return self.get_train_batch()
+
+    def get_val_batch(self):
+        try:
+            batch = next(iter(self.val_dataset))
+        except:
+            return self.get_val_batch()
+
     def add_random_noise(self, img):
         img = tf.image.random_flip_left_right(img)
         img = tf.image.random_saturation(img, 0.6, 1.4)
