@@ -37,6 +37,9 @@ class DataLoader:
             img_paths += glob.glob(os.path.join(directory, ext))
 
         if(labels_as_subdir and labels is None):
+            for ext in extensions:
+                img_paths += glob.glob(os.path.join(directory, "*", ext))
+
             labels = np.array([x.split('/')[-2] for x in img_paths])
 
         ### Make sure user inputs are valid ###
