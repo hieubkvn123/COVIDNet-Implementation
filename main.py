@@ -35,13 +35,13 @@ def train(args):
                 prob, loss, accuracy = train_step(model, optimizer, batch)
 
                 pbar.set_postfix({
-                    'train_loss' : loss.numpy(),
-                    'train_acc' : accuracy.numpy()
+                    'train_loss' : f'{loss.numpy():.4f}',
+                    'train_acc' : f'{accuracy.numpy():.4f}'
                 })
 
                 wandb.log({
-                    'train_loss' : f'{loss.numpy():.4f}',
-                    'train_acc' : f'{accuracy.numpy():.4f}'
+                    'val_loss' : loss.numpy(),
+                    'val_acc' : accuracy.numpy()
                 })
 
                 pbar.update(1)
