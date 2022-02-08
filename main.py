@@ -27,6 +27,7 @@ def train(args):
     wandb.config.update(args)
 
     for epoch in range(args['epochs']):
+        print(f'\nEpoch #[{epoch}/{args["epochs"]}]')
         with tqdm.tqdm(total=steps_per_epoch) as pbar:
             for batch_idx in range(steps_per_epoch):
                 batch = loader.get_train_batch()
@@ -45,6 +46,7 @@ def train(args):
 
                 pbar.update(1)
 
+        print("\nValidating...")
         with tqdm.tqdm(total=val_steps_per_epoch) as pbar:
             for batchidx in range(val_steps_per_epoch):
                 batch = loader.get_val_batch()
