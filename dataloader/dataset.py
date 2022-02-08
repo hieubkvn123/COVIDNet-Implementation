@@ -128,6 +128,12 @@ class DataLoader:
         except:
             return self.get_val_batch()
 
+    def get_train_size(self):
+        return len(self.train_dataset)
+
+    def get_val_size(self):
+        return len(self.val_dataset)
+
     def add_random_noise(self, img):
         img = tf.image.random_flip_left_right(img)
         img = tf.image.random_saturation(img, 0.6, 1.4)

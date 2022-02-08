@@ -3,6 +3,7 @@ import tensorflow as tf
 
 from tensorflow.keras.layers import *
 from tensorflow.keras import initializers as init
+from tensorflow.keras import regularizers
 from tensorflow.keras.models import Model, Sequential
 
 def get_pepx_module(H, W, in_channels, out_channels, name=None, batchnorm=False):
@@ -85,7 +86,7 @@ def get_small_covid_net(H, W, C, n_classes=2, batchnorm=True):
     
     # Classification head
     flatten = Flatten()(pepx41 + pepx42 + pepx43 + out_conv4_1x1)
-    logits = ReLU()(Dense(512)(flatten))
+    logits = ReLU()(Dense(512, kernel_regularizer=regularizers.l2(l2=1e-4))(flatten))
     outputs = Dense(n_classes)(logits)
 
     model = Model(inputs=inputs, outputs=[logits, outputs], name='COVID_Net_Small')
