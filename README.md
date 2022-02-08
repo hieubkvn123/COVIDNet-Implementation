@@ -5,7 +5,8 @@ The original paper can be found [here](https://arxiv.org/abs/2003.09871)
 # TODO
 - [x] Create the dataloader for COVIDx dataset.
 - [x] Replicate the original COVID-Net model.
-- [ ] Create a training script and push the result on Wandb.ai.
+- [x] Create a training script and push the result on Wandb.ai.
+- [ ] Replicate the experiment result in COVID-Net baseline.
 - [ ] Implement changes and further improvements to COVID-Net.
 
 # Reference

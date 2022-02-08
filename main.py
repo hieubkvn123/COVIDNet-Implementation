@@ -34,6 +34,18 @@ def train(args):
                 })
                 pbar.update(1)
 
+        with tqdm.tqdm(total=val_steps_per_epoch) as pbar:
+            for batchidx in range(val_steps_per_epoch):
+                batch = loader.get_val_batch()
+
+                prob, loss, accuracy = val_step(model, batch)
+
+                pbar.set_postfix({
+                    'val_loss' : loss.numpy(),
+                    'val_acc' : accuracy.numpy()
+                })
+                pbar.update(1)
+
 
 if __name__ == '__main__':
     parser = ArgumentParser()
