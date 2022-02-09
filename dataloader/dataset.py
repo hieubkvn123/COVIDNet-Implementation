@@ -78,15 +78,15 @@ class DataLoader:
         val_labels = None
         train_img_paths = []
         val_img_paths = []
+        
+        if(one_hot and labels is not None):
+            labels = tf.one_hot(labels, depth=len(np.unique(labels)))
+            labels = labels.numpy()
 
         if(labels is not None):
             train_img_paths, val_img_paths, train_labels, val_labels = train_test_split(img_paths, labels, test_size=train_val_ratio)
         else:
             train_img_paths, val_img_paths = train_test_split(img_paths, test_size=train_val_ratio)
-
-        if(one_hot and labels is not None):
-            train_labels = tf.one_hot(train_labels, depth=len(np.unique(labels)))
-            val_labels   = tf.one_hot(val_labels, depth=len(np.unique(labels)))
 
         self.img_paths = img_paths
         self.labels = labels
