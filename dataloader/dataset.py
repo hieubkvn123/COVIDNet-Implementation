@@ -12,6 +12,7 @@ from sklearn.model_selection import train_test_split
 class DataLoader:
     def __init__(self, directory, labels=None, one_hot=False,
                  labels_as_subdir=False,
+                 test=False,
                  batch_size = 32,
                  img_size=64,
                  train_val_ratio=0.333,
@@ -89,21 +90,31 @@ class DataLoader:
 
         self.img_paths = img_paths
         self.labels = labels
-        self.train_dataset = disk_image_batch_dataset(train_img_paths,
-                                          self.batch_size,
-                                          labels = train_labels,
-                                          drop_remainder=drop_remainder,
-                                          map_fn=self.map_fn,
-                                          shuffle=shuffle,
-                                          repeat=repeat)
-        
-        self.val_dataset = disk_image_batch_dataset(val_img_paths,
-                                          self.batch_size,
-                                          labels = val_labels,
-                                          drop_remainder=drop_remainder,
-                                          map_fn=self.map_fn,
-                                          shuffle=shuffle,
-                                          repeat=repeat)
+
+        if(not test):
+            self.train_dataset = disk_image_batch_dataset(train_img_paths,
+                                              self.batch_size,
+                                              labels = train_labels,
+                                              drop_remainder=drop_remainder,
+                                              map_fn=self.map_fn,
+                                              shuffle=shuffle,
+                                              repeat=repeat)
+            
+            self.val_dataset = disk_image_batch_dataset(val_img_paths,
+                                              self.batch_size,
+                                              labels = val_labels,
+                                              drop_remainder=drop_remainder,
+                                              map_fn=self.map_fn,
+                                              shuffle=shuffle,
+                                              repeat=repeat)
+        else:
+            self.train_dataset = disk_image_batch_dataset(self.img_paths,
+                                              self.batch_size,
+                                              labels = self.labels,
+                                              drop_remainder=drop_remainder,
+                                              map_fn=self.map_fn,
+                                              shuffle=shuffle,
+                                              repeat=repeat)
 
         self.img_shape = (img_size, img_size, 3)
         self.dataset_len = len(img_paths) // self.batch_size
