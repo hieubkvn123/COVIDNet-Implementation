@@ -3,6 +3,9 @@ A replication of COVIDNet for COVID-19 diagnosis.
 The original paper can be found [here](https://arxiv.org/abs/2003.09871)
 
 # Set-up
+
+- [Data preparation and preprocessing](https://github.com/hieubkvn123/COVIDNet-Implementation/tree/main/data)
+
 ## 1. Install requirements
 Install the python libraries used in this project with
 ```
