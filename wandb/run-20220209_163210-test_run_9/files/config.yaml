@@ -1,0 +1,48 @@
+wandb_version: 1
+
+_wandb:
+  desc: null
+  value:
+    cli_version: 0.12.9
+    framework: tensorflow
+    is_jupyter_run: false
+    is_kaggle_kernel: false
+    python_version: 3.8.10
+    start_time: 1644399130
+    t:
+      1:
+      - 3
+      - 5
+      3:
+      - 14
+      4: 3.8.10
+      5: 0.12.9
+      8:
+      - 5
+batch_norm:
+  desc: null
+  value: true
+batch_size:
+  desc: null
+  value: 16
+data_dir:
+  desc: null
+  value: data/covidx/train
+epochs:
+  desc: null
+  value: 50
+img_size:
+  desc: null
+  value: 480
+lr:
+  desc: null
+  value: 0.0001
+run_name:
+  desc: null
+  value: test_run_9
+test_dir:
+  desc: null
+  value: data/covidx/test
+val_ratio:
+  desc: null
+  value: 0.2

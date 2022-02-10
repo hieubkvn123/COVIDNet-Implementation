@@ -1,0 +1,31 @@
+{
+    "os": "Linux-5.13.0-28-generic-x86_64-with-glibc2.29",
+    "python": "3.8.10",
+    "heartbeatAt": "2022-02-09T09:32:12.279262",
+    "startedAt": "2022-02-09T09:32:10.342505",
+    "docker": null,
+    "gpu": "NVIDIA GeForce RTX 2080 Ti",
+    "gpu_count": 1,
+    "cpu_count": 16,
+    "cuda": null,
+    "args": [
+        "--data_dir",
+        "data/covidx/train",
+        "--test_dir",
+        "data/covidx/test",
+        "--run_name",
+        "test_run_9"
+    ],
+    "state": "running",
+    "program": "main.py",
+    "codePath": "main.py",
+    "git": {
+        "remote": "https://github.com/hieubkvn123/COVIDNet-Implementation.git",
+        "commit": "8df8be6a02f12da6a59eb69d12c8c992ff1ef4d0"
+    },
+    "email": "hieubkvn123@gmail.com",
+    "root": "/home/minhhieu/Desktop/Hieu/COVIDNet-Implementation",
+    "host": "minhhieu-Z490-GAMING-X",
+    "username": "minhhieu",
+    "executable": "/usr/bin/python3"
+}

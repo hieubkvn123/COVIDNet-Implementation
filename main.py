@@ -50,7 +50,11 @@ def train(args):
 
                 pbar.update(1)
 
+
+        # ---- Validation ---- #
         print("\nValidating...")
+        val_losses = []
+        val_accs = []
         with tqdm.tqdm(total=val_steps_per_epoch) as pbar:
             for batchidx in range(val_steps_per_epoch):
                 batch = loader.get_val_batch()
@@ -62,14 +66,20 @@ def train(args):
                     'val_acc' : f'{accuracy.numpy():.4f}'
                 })
                 
-                wandb.log({
-                    'val_loss' : loss.numpy(),
-                    'val_acc' : accuracy.numpy()
-                })
+                val_losses.append(loss.numpy())
+                val_accs.append(accuracy.numpy())
                 
                 pbar.update(1)
 
+        wandb.log({
+            'val_loss' : loss.numpy(),
+            'val_acc' : accuracy.numpy()
+        })
+
+        # ---- Testing ---- #
         print('\nTesting...')
+        test_losses = []
+        test_accs = []
         with tqdm.tqdm(total=test_steps_per_epoch) as pbar:
             for batchidx in range(test_steps_per_epoch):
                 batch = test_loader.get_train_batch()
@@ -80,14 +90,17 @@ def train(args):
                     'test_loss' : f'{loss.numpy():.4f}',
                     'test_acc' : f'{accuracy.numpy():.4f}'
                 })
-                
-                wandb.log({
-                    'test_loss' : loss.numpy(),
-                    'test_acc' : accuracy.numpy()
-                })
+
+                test_losses.append(loss.numpy())
+                test_accs.append(accuracy.numpy())
                 
                 pbar.update(1)
 
+                
+        wandb.log({
+            'test_loss' : loss.numpy(),
+            'test_acc' : accuracy.numpy()
+        })
 
 
 if __name__ == '__main__':

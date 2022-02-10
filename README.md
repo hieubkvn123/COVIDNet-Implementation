@@ -6,7 +6,7 @@ The original paper can be found [here](https://arxiv.org/abs/2003.09871)
 - [x] Create the dataloader for COVIDx dataset.
 - [x] Replicate the original COVID-Net model.
 - [x] Create a training script and push the result on Wandb.ai.
-	- [ ] Add another loop for testing in the training loop.
+	- [x] Add another loop for testing in the training loop.
 	- [ ] Add early stopping and overfitting detection.
 	- [ ] Add regularizers in each conv layer.
 	- [ ] Create a learning rate scheduler.
