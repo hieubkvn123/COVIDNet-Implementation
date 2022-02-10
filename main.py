@@ -93,7 +93,7 @@ def train(args):
                 pbar.update(1)
 
         wandb.log({
-            'val_loss' : np.array(val_losses).mean() # loss.numpy(),
+            'val_loss' : np.array(val_losses).mean(), # loss.numpy(),
             'val_acc' : np.array(val_accs).mean() # accuracy.numpy()
         })
         mean_val_losses.append(np.array(val_losses).mean())
@@ -121,7 +121,7 @@ def train(args):
 
                 
         wandb.log({
-            'test_loss' : np.array(test_losses).mean() # loss.numpy(),
+            'test_loss' : np.array(test_losses).mean(), # loss.numpy(),
             'test_acc' : np.array(test_accs).mean() # accuracy.numpy()
         })
         mean_test_losses.append(np.array(test_losses).mean())
