@@ -32,7 +32,7 @@ def train(args):
     wandb.config.update(args)
 
     for epoch in range(args['epochs']):
-        print(f'\n\nEpoch #[{epoch}/{args["epochs"]}]')
+        print(f'\n\nEpoch #[{epoch + 1}/{args["epochs"]}]')
         with tqdm.tqdm(total=steps_per_epoch) as pbar:
             for batch_idx in range(steps_per_epoch):
                 batch = loader.get_train_batch()
