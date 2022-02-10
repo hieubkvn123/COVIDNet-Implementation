@@ -1,5 +1,6 @@
 import os
 import tqdm
+import time
 import wandb
 import numpy as np
 import tensorflow as tf
@@ -50,6 +51,8 @@ def train(args):
 
                 pbar.update(1)
 
+        time.sleep(1.0)
+
 
         # ---- Validation ---- #
         print("\nValidating...")
@@ -75,6 +78,7 @@ def train(args):
             'val_loss' : loss.numpy(),
             'val_acc' : accuracy.numpy()
         })
+        time.sleep(1.0)
 
         # ---- Testing ---- #
         print('\nTesting...')
@@ -101,6 +105,7 @@ def train(args):
             'test_loss' : loss.numpy(),
             'test_acc' : accuracy.numpy()
         })
+        time.sleep(1.0)
 
 
 if __name__ == '__main__':
