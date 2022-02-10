@@ -33,3 +33,25 @@ def val_step(model, batch):
     accuracy = tf.cast(correct_prediction, dtype=tf.float32)
     
     return tf.reduce_mean(loss), tf.reduce_mean(accuracy)
+
+def is_overfitting(metrics, patience=5, higher=False):
+    if(not isinstance(metrics, np.ndarray)):
+        metrics = np.array(metrics)
+
+    if(len(metrics) < patience + 1):
+        return False
+
+    metrics_rollup = np.roll(metrics, -1)
+    metrics_rollup[-1] = metrics[-1]
+
+    # Count how many times metrics has increased or decreased
+    count = None
+    if(higher): 
+        # Count how many times metrics has decreased
+        count = len(np.where(metrics_rollup < metrics)[0])
+    else:
+        # Count how many times metrics has increased
+        count = len(np.where(metrics_rollup > metrics)[0])
+
+    return count >= patience
+

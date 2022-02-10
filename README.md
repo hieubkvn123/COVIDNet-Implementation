@@ -7,8 +7,8 @@ The original paper can be found [here](https://arxiv.org/abs/2003.09871)
 - [x] Replicate the original COVID-Net model.
 - [x] Create a training script and push the result on Wandb.ai.
 	- [x] Add another loop for testing in the training loop.
-	- [ ] Add early stopping and overfitting detection.
-	- [ ] Add regularizers in each conv layer.
+	- [x] Add early stopping and overfitting detection.
+	- [x] Add regularizers in each conv layer.
 	- [ ] Create a learning rate scheduler.
 	- [ ] Add image augmentation in the data loader.
 - [ ] Replicate the experiment result in COVID-Net baseline.
