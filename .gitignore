@@ -6,6 +6,9 @@ __pycache__/
 # Dataset
 data/covidx
 
+# checkpoints
+checkpoints/*
+
 # C extensions
 *.so
 

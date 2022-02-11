@@ -45,13 +45,21 @@ def is_overfitting(metrics, patience=5, higher=False):
     metrics_rollup[-1] = metrics[-1]
 
     # Count how many times metrics has increased or decreased
-    count = None
+    overfitting = False
     if(higher): 
         # Count how many times metrics has decreased
-        count = len(np.where(metrics_rollup < metrics)[0])
+        incidences = np.where(metrics_rollup < metrics)[0]
     else:
         # Count how many times metrics has increased
-        count = len(np.where(metrics_rollup > metrics)[0])
+        incidences = np.where(metrics_rollup > metrics)[0]
 
-    return count >= patience
+    if(len(incidences) >= patience):
+        top_N = incidences[-patience:]
+        min_ = min(top_N)
+        max_ = max(top_N)
+
+        if(len(list(range(min_, max_ + 1))) >= len(top_N)):
+            overfitting = True
+    
+    return overfitting
 
