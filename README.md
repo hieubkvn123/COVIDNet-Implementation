@@ -53,7 +53,8 @@ python3 main.py --data_dir data/covidx/train
 	- [x] Add early stopping and overfitting detection.
 	- [x] Add regularizers in each conv layer.
 	- [ ] Create a learning rate scheduler.
-	- [ ] Add image augmentation in the data loader.
+	- [x] Add image augmentation in the data loader.
+		- So far the augmentation includes : Rotation, Translation, Horizontal Flip.
 - [ ] Replicate the experiment result in COVID-Net baseline.
 - [ ] Implement changes and further improvements to COVID-Net.
 

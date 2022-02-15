@@ -1,6 +1,25 @@
+import random
 import multiprocessing
+import numpy as np
 import tensorflow as tf
+import tensorflow_addons as tfa
 
+# For augmentation
+def augment_using_ops(images, labels):
+    # Img dimensions
+    H, W = images.shape[1:3]
+
+    # Horizontal flip
+    if(random.choice([True, False])):
+        images = tf.image.random_flip_left_right(images)
+
+    # Rotation
+    images = tfa.image.rotate(images, angles=np.random.randint(0, 60, size=images.shape[0])/180 * np.pi)
+
+    # Random translation
+    images = tfa.image.translate(images, translations=np.random.randint(0, 20, size=(images.shape[0], 2)).astype('float32')/H) 
+
+    return (images, labels)
 
 def batch_dataset(dataset,
                   batch_size,
@@ -12,6 +31,7 @@ def batch_dataset(dataset,
                   filter_after_map=False,
                   shuffle=True,
                   shuffle_buffer_size=None,
+                  aug=False,
                   repeat=None):
     # set defaults
     if n_map_threads is None:
@@ -36,9 +56,15 @@ def batch_dataset(dataset,
             dataset = dataset.filter(filter_fn)
 
     dataset = dataset.batch(batch_size, drop_remainder=drop_remainder)
+
+    # If augmentation is True
+    if(aug):
+        dataset = dataset.map(augment_using_ops, num_parallel_calls=n_map_threads)
+
     dataset = dataset.repeat(repeat).prefetch(n_prefetch_batch)
 
     return dataset
+
 
 
 def memory_data_batch_dataset(memory_data,
@@ -51,6 +77,7 @@ def memory_data_batch_dataset(memory_data,
                               filter_after_map=False,
                               shuffle=True,
                               shuffle_buffer_size=None,
+                              aug=False,
                               repeat=None):
     """Batch dataset of memory data.
 
@@ -70,6 +97,7 @@ def memory_data_batch_dataset(memory_data,
                             filter_after_map=filter_after_map,
                             shuffle=shuffle,
                             shuffle_buffer_size=shuffle_buffer_size,
+                            aug=aug,
                             repeat=repeat)
     return dataset
 
@@ -85,6 +113,7 @@ def disk_image_batch_dataset(img_paths,
                              filter_after_map=False,
                              shuffle=True,
                              shuffle_buffer_size=None,
+                             aug=False,
                              repeat=None):
     """Batch dataset of disk image for PNG and JPEG.
 
@@ -132,6 +161,7 @@ def disk_image_batch_dataset(img_paths,
                                         filter_after_map=filter_after_map,
                                         shuffle=shuffle,
                                         shuffle_buffer_size=shuffle_buffer_size,
+                                        aug=aug,
                                         repeat=repeat)
 
     return dataset

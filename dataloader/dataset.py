@@ -1,8 +1,11 @@
 import os
+import time
 import tqdm
 import glob
+import random
 import numpy as np
 import tensorflow as tf
+import tensorflow_addons as tfa
 
 from .dataset_ import *
 from .tfrecord import *
@@ -98,6 +101,7 @@ class DataLoader:
                                               drop_remainder=drop_remainder,
                                               map_fn=self.map_fn,
                                               shuffle=shuffle,
+                                              aug=self.random_noise,
                                               repeat=repeat)
             
             self.val_dataset = disk_image_batch_dataset(val_img_paths,
@@ -146,9 +150,14 @@ class DataLoader:
         return len(self.val_dataset)
 
     def add_random_noise(self, img):
+        # Flip image horizontally randomly
         img = tf.image.random_flip_left_right(img)
-        img = tf.image.random_saturation(img, 0.6, 1.4)
-        img = tf.image.random_brightness(img, 0.4)
+
+        # Intensity shift
+        img = tf.image.random_brightness(img, 0.6)
+
+        # Random rotation
+        img = tfa.image.transform_ops.rotate(img, np.random.randint(25,50))
 
         return img
 
@@ -157,7 +166,7 @@ class DataLoader:
         def map_fn(img, random_noise=self.random_noise, noise_fn=self.add_random_noise):
             img = tf.image.resize(img, [img_size, img_size])
             img = self.colorspace(img)
-            if(random_noise): img = noise_fn(img)
+
             img = tf.clip_by_value(img, 0, 255)
 
             img = img / 127.5 - 1
@@ -171,7 +180,7 @@ class DataLoader:
         def map_fn(img, random_noise=self.random_noise, noise_fn=self.add_random_noise):
             img = tf.image.resize(img, [img_size, img_size])
             img = self.colorspace(img)
-            if(random_noise): img = noise_fn(img)
+            
             img = tf.clip_by_value(img, 0, 255)
 
             img = tf.image.per_image_standardization(img)
@@ -185,7 +194,7 @@ class DataLoader:
         def map_fn(img, random_noise=self.random_noise, noise_fn=self.add_random_noise):
             img = tf.image.resize(img, [img_size, img_size])
             img = self.colorspace(img)
-            if(random_noise): img = noise_fn(img)
+            
             img = tf.clip_by_value(img, 0, 255)
 
             img = tf.cast(img, tf.float32)
