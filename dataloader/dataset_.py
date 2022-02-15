@@ -5,19 +5,27 @@ import tensorflow as tf
 import tensorflow_addons as tfa
 
 # For augmentation
-def augment_using_ops(images, labels):
+def augment_using_ops(images, labels, aug_ratio=0.5):
     # Img dimensions
-    H, W = images.shape[1:3]
+    B, H, W, C = images.shape
+
+    # Split the batches in corresponding ratio
+    images, images_aug = tf.split(images, num_or_size_splits=[B - int(B*aug_ratio), int(B*aug_ratio)])
 
     # Horizontal flip
     if(random.choice([True, False])):
-        images = tf.image.random_flip_left_right(images)
+        images_aug = tf.image.random_flip_left_right(images_aug)
 
     # Rotation
-    images = tfa.image.rotate(images, angles=np.random.randint(0, 60, size=images.shape[0])/180 * np.pi)
+    images_aug = tfa.image.rotate(images_aug, 
+            angles=np.random.randint(0, 45, size=images.shape[0])/180 * np.pi,
+            fill_mode='bilinear')
 
     # Random translation
-    images = tfa.image.translate(images, translations=np.random.randint(0, 20, size=(images.shape[0], 2)).astype('float32')/H) 
+    images_aug = tfa.image.translate(images_aug, translations=np.random.randint(0, 20, size=(images.shape[0], 2)).astype('float32')/H) 
+
+    # Merge back with the non-augmented data
+    images = tf.concat([images, images_aug], axis=0)
 
     return (images, labels)
 
