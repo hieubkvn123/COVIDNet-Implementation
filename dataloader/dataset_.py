@@ -19,7 +19,7 @@ def augment_using_ops(images, labels, aug_ratio=0.5):
     # Rotation
     images_aug = tfa.image.rotate(images_aug, 
             angles=np.random.randint(0, 45, size=images.shape[0])/180 * np.pi,
-            fill_mode='bilinear')
+            interpolation='bilinear')
 
     # Random translation
     images_aug = tfa.image.translate(images_aug, translations=np.random.randint(0, 20, size=(images.shape[0], 2)).astype('float32')/H) 

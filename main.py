@@ -28,10 +28,12 @@ def train(args):
         os.mkdir(os.path.join(args['save_dir'], 'weights'))
     
     loader = DataLoader(args['data_dir'], labels_as_subdir=True, one_hot=True,
-            img_size=args['img_size'], train_val_ratio=args['val_ratio'])
+            img_size=args['img_size'], train_val_ratio=args['val_ratio'],
+            batch_size=args['batch_size'], random_noise=True) # random_noise = augmentation
 
     test_loader = DataLoader(args['test_dir'], labels_as_subdir=True, one_hot=True,
-            img_size=args['img_size'],  test=True)
+            img_size=args['img_size'],test=True,
+            batch_size=args['batch_size'], random_noise=False)
 
     steps_per_epoch = loader.get_train_size()
     val_steps_per_epoch = loader.get_val_size()
