@@ -14,6 +14,12 @@ from train import train_step, val_step, is_overfitting
 from argparse import ArgumentParser
 
 def train(args):
+    # Check if GPU is available
+    if(tf.test.is_gpu_available()):
+        print('[INFO] GPU-enabled training is running ...')
+    else:
+        print('[INFO] GPU is not detected ...')
+
     # Create checkpoint directory
     if(not os.path.exists(args['save_dir'])):
         print('[INFO] Creating checkpoint directory ...')
