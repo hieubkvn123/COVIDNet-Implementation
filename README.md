@@ -31,6 +31,7 @@ parser.add_argument('--val_ratio', type=float, required=False, default=0.2, help
 parser.add_argument('--epochs', type=int, required=False, default=50, help='Number of training iterations')
 parser.add_argument('--batch_size', type=int, required=False, default=16, help='Number of instances per batch')
 parser.add_argument('--lr', type=float, required=False, default=1e-4, help='Learning rate')
+parser.add_argument('--lr_sched', type=str, required=False, default='exp', choices=['exp', 'lin'], help='Types of learning rate scheduler. "exp" for exponential decay, "lin" for linear decay')
 parser.add_argument('--run_name', type=str, required=True, help='Name of the wandb run')
 parser.add_argument('--patience', type=int, required=False, help='Patience for early stopping')
 parser.add_argument('--saved_every', type=int, required=False, default=5, help='Number of steps to save model weights once every time')
@@ -52,7 +53,7 @@ python3 main.py --data_dir data/covidx/train
 	- [x] Add another loop for testing in the training loop.
 	- [x] Add early stopping and overfitting detection.
 	- [x] Add regularizers in each conv layer.
-	- [ ] Create a learning rate scheduler.
+	- [x] Create a learning rate scheduler.
 	- [x] Add image augmentation in the data loader.
 		- So far the augmentation includes : Rotation, Translation, Horizontal Flip.
 - [ ] Replicate the experiment result in COVID-Net baseline.

@@ -11,6 +11,7 @@ from dataloader import DataLoader
 from models import get_small_covid_net
 from wandb_config import config
 from train import train_step, val_step, is_overfitting
+from train import exp_decay_learning_rate, lin_decay_learning_rate
 from argparse import ArgumentParser
 
 def train(args):
@@ -52,6 +53,7 @@ def train(args):
     wandb.config.update(args)
 
     # Some config variables
+    lr = args['lr']
     mean_val_losses = []
     mean_test_losses = []
     best_model = model
@@ -59,7 +61,15 @@ def train(args):
     # Start training
     for epoch in range(args['epochs']):
         print(f'\n\nEpoch #[{epoch + 1}/{args["epochs"]}]')
-        with tqdm.tqdm(total=steps_per_epoch) as pbar:
+        with tqdm.tqdm(total=steps_per_epoch) as pbar:  
+            if(args['lr_sched'] == 'exp'):
+                lr = exp_decay_learning_rate(lr, epoch + 1, decay_steps=args['epochs'])
+            else:
+                lr = lin_decay_learning_rate(lr, epoch + 1, decay_steps=args['epochs'], end_lr=0.1*args['lr'])
+
+            optimizer.learning_rate.assign(lr)
+            print('[INFO] Learning rate updated to ', optimizer.learning_rate.numpy(), ' ...')
+
             for batch_idx in range(steps_per_epoch):
                 batch = loader.get_train_batch()
 
@@ -161,6 +171,7 @@ if __name__ == '__main__':
     parser.add_argument('--epochs', type=int, required=False, default=50, help='Number of training iterations')
     parser.add_argument('--batch_size', type=int, required=False, default=16, help='Number of instances per batch')
     parser.add_argument('--lr', type=float, required=False, default=1e-4, help='Learning rate')
+    parser.add_argument('--lr_sched', type=str, required=False, default='exp', choices=['exp', 'lin'], help='Types of learning rate scheduler. "exp" for exponential decay, "lin" for linear decay')
     parser.add_argument('--run_name', type=str, required=True, help='Name of the wandb run')
     parser.add_argument('--patience', type=int, required=False, help='Patience for early stopping')
     parser.add_argument('--saved_every', type=int, required=False, default=5, help='Number of steps to save model weights once every time')

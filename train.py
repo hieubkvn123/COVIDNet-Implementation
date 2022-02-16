@@ -63,3 +63,9 @@ def is_overfitting(metrics, patience=5, higher=False):
     
     return overfitting
 
+def exp_decay_learning_rate(init_lr, step, decay_steps=1e5, decay_rate=0.96):
+    return init_lr * decay_rate ** (step / decay_steps)
+
+def lin_decay_learning_rate(init_lr, step, end_lr=0.0001, decay_steps=1e5, decay_rate=0.04):
+    return (1 - decay_rate) * init_lr + decay_rate * end_lr 
+
