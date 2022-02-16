@@ -58,7 +58,7 @@ def is_overfitting(metrics, patience=5, higher=False):
         min_ = min(top_N)
         max_ = max(top_N)
 
-        if(len(list(range(min_, max_ + 1))) >= len(top_N)):
+        if(len(list(range(min_, max_ + 1))) == len(top_N)):
             overfitting = True
     
     return overfitting
