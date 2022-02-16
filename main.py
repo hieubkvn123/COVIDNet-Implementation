@@ -44,7 +44,7 @@ def train(args):
 
     steps_per_epoch = loader.get_train_size()
     val_steps_per_epoch = loader.get_val_size()
-    test_steps_per_epoch = loader.get_train_size()
+    test_steps_per_epoch = test_loader.get_train_size()
 
     model = get_small_covid_net(args['img_size'], args['img_size'], 3, batchnorm=not args['no_batch_norm']) 
     optimizer = Adam(lr=args['lr'], beta_1=0.5, beta_2=0.999, amsgrad=True)
@@ -59,107 +59,113 @@ def train(args):
     best_model = model
 
     # Start training
-    for epoch in range(args['epochs']):
-        print(f'\n\nEpoch #[{epoch + 1}/{args["epochs"]}]')
-        with tqdm.tqdm(total=steps_per_epoch) as pbar:  
-            if(args['lr_sched'] == 'exp'):
-                lr = exp_decay_learning_rate(lr, epoch + 1, decay_steps=args['epochs'])
-            else:
-                lr = lin_decay_learning_rate(lr, epoch + 1, decay_steps=args['epochs'], end_lr=0.1*args['lr'])
+    try:
+        for epoch in range(args['epochs']):
+            print(f'\n\nEpoch #[{epoch + 1}/{args["epochs"]}]')
+            with tqdm.tqdm(total=steps_per_epoch) as pbar:  
+                if(args['lr_sched'] == 'exp'):
+                    lr = exp_decay_learning_rate(lr, epoch + 1, decay_steps=args['epochs'])
+                else:
+                    lr = lin_decay_learning_rate(lr, epoch + 1, decay_steps=args['epochs'], end_lr=0.1*args['lr'])
 
-            optimizer.learning_rate.assign(lr)
-            print('[INFO] Learning rate updated to ', optimizer.learning_rate.numpy(), ' ...')
+                optimizer.learning_rate.assign(lr)
+                print('[INFO] Learning rate updated to ', optimizer.learning_rate.numpy(), ' ...')
 
-            for batch_idx in range(steps_per_epoch):
-                batch = loader.get_train_batch()
+                for batch_idx in range(steps_per_epoch):
+                    batch = loader.get_train_batch()
 
-                prob, loss, accuracy = train_step(model, optimizer, batch)
+                    prob, loss, accuracy = train_step(model, optimizer, batch)
 
-                pbar.set_postfix({
-                    'train_loss' : f'{loss.numpy():.4f}',
-                    'train_acc' : f'{accuracy.numpy():.4f}'
-                })
+                    pbar.set_postfix({
+                        'train_loss' : f'{loss.numpy():.4f}',
+                        'train_acc' : f'{accuracy.numpy():.4f}'
+                    })
 
-                wandb.log({
-                    'train_loss' : loss.numpy(),
-                    'train_acc' : accuracy.numpy()
-                })
+                    wandb.log({
+                        'train_loss' : loss.numpy(),
+                        'train_acc' : accuracy.numpy()
+                    })
 
-                pbar.update(1)
+                    pbar.update(1)
 
-        time.sleep(1.0)
+            time.sleep(1.0)
 
 
-        # ---- Validation ---- #
-        print("\nValidating...")
-        val_losses = []
-        val_accs = []
-        with tqdm.tqdm(total=val_steps_per_epoch) as pbar:
-            for batchidx in range(val_steps_per_epoch):
-                batch = loader.get_val_batch()
+            # ---- Validation ---- #
+            print("\nValidating...")
+            val_losses = []
+            val_accs = []
+            with tqdm.tqdm(total=val_steps_per_epoch) as pbar:
+                for batchidx in range(val_steps_per_epoch):
+                    batch = loader.get_val_batch()
 
-                loss, accuracy = val_step(model, batch)
+                    loss, accuracy = val_step(model, batch)
 
-                pbar.set_postfix({
-                    'val_loss' : f'{loss.numpy():.4f}',
-                    'val_acc' : f'{accuracy.numpy():.4f}'
-                })
-                
-                val_losses.append(loss.numpy())
-                val_accs.append(accuracy.numpy())
-                
-                pbar.update(1)
+                    pbar.set_postfix({
+                        'val_loss' : f'{loss.numpy():.4f}',
+                        'val_acc' : f'{accuracy.numpy():.4f}'
+                    })
+                    
+                    val_losses.append(loss.numpy())
+                    val_accs.append(accuracy.numpy())
+                    
+                    pbar.update(1)
 
-        wandb.log({
-            'val_loss' : np.array(val_losses).mean(), # loss.numpy(),
-            'val_acc' : np.array(val_accs).mean() # accuracy.numpy()
-        })
-        mean_val_losses.append(np.array(val_losses).mean())
-        time.sleep(1.0)
+            wandb.log({
+                'val_loss' : np.array(val_losses).mean(), # loss.numpy(),
+                'val_acc' : np.array(val_accs).mean() # accuracy.numpy()
+            })
+            mean_val_losses.append(np.array(val_losses).mean())
+            time.sleep(1.0)
 
-        # ---- Testing ---- #
-        print('\nTesting...')
-        test_losses = []
-        test_accs = []
-        with tqdm.tqdm(total=test_steps_per_epoch) as pbar:
-            for batchidx in range(test_steps_per_epoch):
-                batch = test_loader.get_train_batch()
+            # ---- Testing ---- #
+            print('\nTesting...')
+            test_losses = []
+            test_accs = []
+            with tqdm.tqdm(total=test_steps_per_epoch) as pbar:
+                for batchidx in range(test_steps_per_epoch):
+                    batch = test_loader.get_train_batch()
 
-                loss, accuracy = val_step(model, batch)
+                    loss, accuracy = val_step(model, batch)
 
-                pbar.set_postfix({
-                    'test_loss' : f'{loss.numpy():.4f}',
-                    'test_acc' : f'{accuracy.numpy():.4f}'
-                })
+                    pbar.set_postfix({
+                        'test_loss' : f'{loss.numpy():.4f}',
+                        'test_acc' : f'{accuracy.numpy():.4f}'
+                    })
 
-                test_losses.append(loss.numpy())
-                test_accs.append(accuracy.numpy())
-                
-                pbar.update(1)
+                    test_losses.append(loss.numpy())
+                    test_accs.append(accuracy.numpy())
+                    
+                    pbar.update(1)
 
-                
-        wandb.log({
-            'test_loss' : np.array(test_losses).mean(), # loss.numpy(),
-            'test_acc' : np.array(test_accs).mean() # accuracy.numpy()
-        })
-        mean_test_losses.append(np.array(test_losses).mean())
-        time.sleep(1.0)
+                    
+            wandb.log({
+                'test_loss' : np.array(test_losses).mean(), # loss.numpy(),
+                'test_acc' : np.array(test_accs).mean() # accuracy.numpy()
+            })
+            mean_test_losses.append(np.array(test_losses).mean())
+            time.sleep(1.0)
 
-        # Detect overfitting
-        if(is_overfitting(mean_val_losses) or is_overfitting(mean_test_losses)):
-            print('[INFO] Overfitting detected, training halted ...')
-            break
+            # Detect overfitting
+            if(is_overfitting(mean_val_losses) or is_overfitting(mean_test_losses)):
+                print('[INFO] Overfitting detected, training halted ...')
+                break
 
-        # Check if best_model can be saved based on validation loss
-        if(mean_val_losses[-1] == min(mean_val_losses)):
-            print('[INFO] Saving best model ...')
-            best_model = model
+            # Check if best_model can be saved based on validation loss
+            if(mean_val_losses[-1] == min(mean_val_losses)):
+                print('[INFO] Saving best model ...')
+                best_model = model
 
-        # Checkpoint model
-        if((epoch + 1) % args['saved_every'] == 0):
-            print('[INFO] Checkpointing ...')
-            model.save(os.path.join(args['save_dir'], 'models', f'model_step_{epoch+1}.h5'))
-            model.save(os.path.join(args['save_dir'], 'weights', f'model_step_{epoch+1}.weights.h5'))
+            # Checkpoint model
+            if((epoch + 1) % args['saved_every'] == 0):
+                print('[INFO] Checkpointing ...')
+                model.save(os.path.join(args['save_dir'], 'models', f'model_step_{epoch+1}.h5'))
+                model.save_weights(os.path.join(args['save_dir'], 'weights', f'model_step_{epoch+1}.weights.h5'))
+    except:
+        print('[INFO] Training halted unexpectedly, saving best model ...')
+        best_model.save(os.path.join(args['save_dir'], 'models', f'best_model.h5'))
+        best_model.save_weights(os.path.join(args['save_dir'], 'weights', f'best_model.weights.h5'))
+
 
 if __name__ == '__main__':
     parser = ArgumentParser()
