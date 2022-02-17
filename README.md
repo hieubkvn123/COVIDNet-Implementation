@@ -56,8 +56,11 @@ python3 main.py --data_dir data/covidx/train
 	- [x] Create a learning rate scheduler.
 	- [x] Add image augmentation in the data loader.
 		- So far the augmentation includes : Rotation, Translation, Horizontal Flip.
-- [ ] Replicate the experiment result in COVID-Net baseline.
+- [x] Replicate the experiment result in COVID-Net baseline.
 - [ ] Implement changes and further improvements to COVID-Net.
+	- [ ] Add regularization (L1 and L2) to the PEPx module and test run.
+	- [ ] Clip the logits features using L2 normalization and test run.
+	- [ ] Add the Additive Angular Margin Penalty head to the logits layer.
 
 # Reference
 - Orignal COVID-Net paper : https://arxiv.org/abs/2003.09871
