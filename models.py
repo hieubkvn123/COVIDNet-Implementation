@@ -6,6 +6,8 @@ from tensorflow.keras import initializers as init
 from tensorflow.keras import regularizers
 from tensorflow.keras.models import Model, Sequential
 
+from contrastive import ArcFace, CosFace, SphereFace
+
 def get_pepx_module(H, W, in_channels, out_channels, name=None, batchnorm=False, regularizer='l2', lambda_=1e-5):
     inputs = Input(shape=(H, W, in_channels))
 
@@ -36,8 +38,9 @@ def get_pepx_module(H, W, in_channels, out_channels, name=None, batchnorm=False,
 
     return pepx_module
 
-def get_small_covid_net(H, W, C, n_classes=2, batchnorm=True, reg=None):
+def get_small_covid_net(H, W, C, n_classes=2, batchnorm=True, reg=None, contrastive=None):
     inputs = Input(shape=(H, W, C))
+    labels = Input(shape=(n_classes,))
 
     # First conv layer
     conv1 = Conv2D(56, kernel_size=(7, 7), strides=2, padding='same', kernel_initializer=init.HeNormal())(inputs)
@@ -94,8 +97,20 @@ def get_small_covid_net(H, W, C, n_classes=2, batchnorm=True, reg=None):
     # Classification head
     flatten = Flatten()(pepx41 + pepx42 + pepx43 + out_conv4_1x1)
     logits = ReLU()(Dense(512, kernel_regularizer=regularizers.l2(l2=1e-4))(flatten))
-    outputs = Dense(n_classes)(logits)
 
+    outputs = Dense(n_classes)(logits)
     model = Model(inputs=inputs, outputs=[logits, outputs], name='COVID_Net_Small')
+    
+    if(contrastive is not None):
+        if(contrastive == 'arcface'):
+            outputs = ArcFace(n_classes=n_classes)([logits, labels])
+
+        elif(contrastive == 'cosface'):
+            outputs = CosFace(n_classes=n_classes)([logits, labels])
+
+        elif(contrastive == 'sphereface'):
+            outputs = SphereFace(n_classes=n_classes)([logits, labels])
+
+        model = Model(inputs=[inputs, labels], outputs=[logits, outputs], name='Contrastive_COVID_Net_Small')
 
     return model

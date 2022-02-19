@@ -4,11 +4,16 @@ import tensorflow as tf
 from tensorflow.keras.losses import BinaryCrossentropy
 
 @tf.function
-def train_step(model, optimizer, batch):
+def train_step(model, optimizer, batch, contrastive=None):
     bce = BinaryCrossentropy(from_logits=True)
     with tf.GradientTape() as tape:
         images, labels = batch
-        logits, logits_prob = model(images, training=True)
+
+        if(contrastive is None):
+            logits, logits_prob = model(images, training=True)
+        else:
+            if(contrastive in ['arcface', 'cosface', 'sphereface']):
+                logits, logits_prob = model([images, labels], training=True)
 
         loss = bce(labels, logits_prob)
         
@@ -21,11 +26,16 @@ def train_step(model, optimizer, batch):
     return logits_prob, tf.reduce_mean(loss), tf.reduce_mean(accuracy)
 
 @tf.function 
-def val_step(model, batch):
+def val_step(model, batch, contrastive=None):
     bce = BinaryCrossentropy(from_logits=True)
 
     images, labels = batch
-    logits, logits_prob = model(images, training=False)
+
+    if(contrastive is None):
+        logits, logits_prob = model(images, training=False)
+    else:
+        if(contrastive in ['arcface', 'cosface', 'sphereface']):
+            logits, logits_prob = model([images, labels], training=False)
 
     loss = bce(labels, logits_prob)
 

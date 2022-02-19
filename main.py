@@ -46,7 +46,8 @@ def train(args):
     val_steps_per_epoch = loader.get_val_size()
     test_steps_per_epoch = test_loader.get_train_size()
 
-    model = get_small_covid_net(args['img_size'], args['img_size'], 3, batchnorm=not args['no_batch_norm']) 
+    model = get_small_covid_net(args['img_size'], args['img_size'], 3, 
+            batchnorm=not args['no_batch_norm'], contrastive=args['contrast_scheme']) 
     optimizer = Adam(lr=args['lr'], beta_1=0.5, beta_2=0.999, amsgrad=True)
 
     wandb.init(project=config['project'], entity=config['entity'], id=args['run_name'])
@@ -74,7 +75,7 @@ def train(args):
                 for batch_idx in range(steps_per_epoch):
                     batch = loader.get_train_batch()
 
-                    prob, loss, accuracy = train_step(model, optimizer, batch)
+                    prob, loss, accuracy = train_step(model, optimizer, batch, contrastive=args['contrast_scheme'])
 
                     pbar.set_postfix({
                         'train_loss' : f'{loss.numpy():.4f}',
@@ -99,7 +100,7 @@ def train(args):
                 for batchidx in range(val_steps_per_epoch):
                     batch = loader.get_val_batch()
 
-                    loss, accuracy = val_step(model, batch)
+                    loss, accuracy = val_step(model, batch, contrastive=args['contrast_scheme'])
 
                     pbar.set_postfix({
                         'val_loss' : f'{loss.numpy():.4f}',
@@ -126,7 +127,7 @@ def train(args):
                 for batchidx in range(test_steps_per_epoch):
                     batch = test_loader.get_train_batch()
 
-                    loss, accuracy = val_step(model, batch)
+                    loss, accuracy = val_step(model, batch, contrastive=args['contrast_scheme'])
 
                     pbar.set_postfix({
                         'test_loss' : f'{loss.numpy():.4f}',
@@ -171,6 +172,7 @@ if __name__ == '__main__':
     parser = ArgumentParser()
     parser.add_argument('--data_dir', type=str, required=True, help='Path to the dataset folder with sub-folders for each class')
     parser.add_argument('--test_dir', type=str, required=True, help='Path to the testing dataset folder with sub-folders for each class')
+    parser.add_argument('--contrast_scheme', type=str, required=False, default=None, choices=['arcface', 'cosface', 'sphereface'], help='Select contrastive learning scheme/loss')
     parser.add_argument('--no_batch_norm', action='store_true', required=False, help='Whether to apply batch normalization on Pepx modules')
     parser.add_argument('--img_size', type=int, required=False, default=480, help='Default image size of the dataset')
     parser.add_argument('--val_ratio', type=float, required=False, default=0.2, help='Ratio of data for validation')
