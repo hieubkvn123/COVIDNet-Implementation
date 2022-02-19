@@ -31,11 +31,11 @@ def train(args):
         print('[INFO] Creating checkpoint directory for model ', args['run_name'])
         os.mkdir(os.path.join(args['save_dir'], args['run_name']))
 
-    if(not os.path.exists(os.path.join(args['save_dir'], 'models'))):
+    if(not os.path.exists(os.path.join(args['save_dir'], args['run_name'], 'models'))):
         print('[INFO] Creating checkpoint models directory ...')
         os.mkdir(os.path.join(args['save_dir'], args['run_name'], 'models'))
 
-    if(not os.path.exists(os.path.join(args['save_dir'], 'weights'))):
+    if(not os.path.exists(os.path.join(args['save_dir'], args['run_name'], 'weights'))):
         print('[INFO] Creating checkpoint weights directory ...')
         os.mkdir(os.path.join(args['save_dir'], args['run_name'], 'weights'))
     
