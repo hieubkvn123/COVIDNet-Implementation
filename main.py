@@ -26,13 +26,18 @@ def train(args):
         print('[INFO] Creating checkpoint directory ...')
         os.mkdir(args['save_dir'])
 
+    # Create checkpoint directory for this model
+    if(not os.path.exists(os.path.join(args['save_dir'], args['run_name']))):
+        print('[INFO] Creating checkpoint directory for model ', args['run_name'])
+        os.mkdir(os.path.join(args['save_dir'], args['run_name']))
+
     if(not os.path.exists(os.path.join(args['save_dir'], 'models'))):
         print('[INFO] Creating checkpoint models directory ...')
-        os.mkdir(os.path.join(args['save_dir'], 'models'))
+        os.mkdir(os.path.join(args['save_dir'], args['run_name'], 'models'))
 
     if(not os.path.exists(os.path.join(args['save_dir'], 'weights'))):
         print('[INFO] Creating checkpoint weights directory ...')
-        os.mkdir(os.path.join(args['save_dir'], 'weights'))
+        os.mkdir(os.path.join(args['save_dir'], args['run_name'], 'weights'))
     
     loader = DataLoader(args['data_dir'], labels_as_subdir=True, one_hot=True,
             img_size=args['img_size'], train_val_ratio=args['val_ratio'],
@@ -160,12 +165,12 @@ def train(args):
             # Checkpoint model
             if((epoch + 1) % args['saved_every'] == 0):
                 print('[INFO] Checkpointing ...')
-                model.save(os.path.join(args['save_dir'], 'models', f'model_step_{epoch+1}.h5'))
-                model.save_weights(os.path.join(args['save_dir'], 'weights', f'model_step_{epoch+1}.weights.h5'))
+                model.save(os.path.join(args['save_dir'], args['run_name'], 'models', f'model_step_{epoch+1}.h5'))
+                model.save_weights(os.path.join(args['save_dir'], args['run_name'], 'weights', f'model_step_{epoch+1}.weights.h5'))
     except:
         print('[INFO] Training halted unexpectedly, saving best model ...')
-        best_model.save(os.path.join(args['save_dir'], 'models', f'best_model.h5'))
-        best_model.save_weights(os.path.join(args['save_dir'], 'weights', f'best_model.weights.h5'))
+        best_model.save(os.path.join(args['save_dir'], args['run_name'], 'models', f'best_model.h5'))
+        best_model.save_weights(os.path.join(args['save_dir'], args['run_name'], 'weights', f'best_model.weights.h5'))
 
 
 if __name__ == '__main__':

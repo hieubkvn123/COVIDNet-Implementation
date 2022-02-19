@@ -50,6 +50,15 @@ class ArcFace(Layer):
 
         return out
 
+    def get_config(self):
+        config = super().get_config().copy()
+        config.update({
+            'n_classes' : self.n_classes,
+            's' : self.s,
+            'm' : self.m
+        })
+        return config
+
     def compute_output_shape(self, input_shape):
         return (None, self.n_classes)
 
@@ -95,6 +104,15 @@ class SphereFace(Layer):
 
         return out
 
+    def get_config(self):
+        config = super().get_config().copy()
+        config.update({
+            'n_classes' : self.n_classes,
+            's' : self.s,
+            'm' : self.m
+        })
+        return config
+
     def compute_output_shape(self, input_shape):
         return (None, self.n_classes)
 
@@ -137,6 +155,15 @@ class CosFace(Layer):
             out = tf.nn.softmax(logits)
 
         return out
+
+    def get_config(self):
+        config = super().get_config().copy()
+        config.update({
+            'n_classes' : self.n_classes,
+            's' : self.s,
+            'm' : self.m
+        })
+        return config
 
     def compute_output_shape(self, input_shape):
         return (None, self.n_classes)

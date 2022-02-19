@@ -103,13 +103,13 @@ def get_small_covid_net(H, W, C, n_classes=2, batchnorm=True, reg=None, contrast
     
     if(contrastive is not None):
         if(contrastive == 'arcface'):
-            outputs = ArcFace(n_classes=n_classes)([logits, labels])
+            outputs = ArcFace(n_classes=n_classes, s=64.0, m=0.5)([logits, labels])
 
         elif(contrastive == 'cosface'):
-            outputs = CosFace(n_classes=n_classes)([logits, labels])
+            outputs = CosFace(n_classes=n_classes, s=64.0)([logits, labels])
 
         elif(contrastive == 'sphereface'):
-            outputs = SphereFace(n_classes=n_classes)([logits, labels])
+            outputs = SphereFace(n_classes=n_classes, s=64.0)([logits, labels])
 
         model = Model(inputs=[inputs, labels], outputs=[logits, outputs], name='Contrastive_COVID_Net_Small')
 
