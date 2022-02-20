@@ -54,6 +54,27 @@ python3 main.py --data_dir data/covidx/train
 			--no_batch_norm
 ```
 
+# Experimental Results
+## Embeddings visualization for baseline and contrastive model
+- The logits embeddings of the contrastive COVID-Net model and the baseline COVID-Net model (without pretraining with 
+ImageNet or knowledge distillation) are computed and reduced to 3D using PCA and visualized as scatter plots:
+<table>
+<tr>
+<th>Baseline Model</th>
+<th>Contrastive Model</th>
+</tr>
+
+<tr>
+<td>
+<img src="media/embedding_baseline_model.png"/>
+</td>
+<td>
+<img src="media/embedding_contrastive_model.png"/>
+</td>
+</tr>
+</table>
+
+
 # TODO
 - [x] Create the dataloader for COVIDx dataset.
 - [x] Replicate the original COVID-Net model.
