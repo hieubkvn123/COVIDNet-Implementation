@@ -2,6 +2,14 @@
 A replication of COVIDNet for COVID-19 diagnosis.
 The original paper can be found [here](https://arxiv.org/abs/2003.09871)
 
+# Introduction
+In this work, I proposed some minor modifications to the original "COVID-Net: A Tailored Deep Convolutional Neural
+Network Design for Detection of COVID-19 Cases from Chest X-Ray Images" paper. In the original COVID-Net
+implementation, the author proposed a lightweight CNN architecture tailored for COVID-19 diagnosis. In order to
+increase the robustness of the method, I incorporated several contrastive learning scheme to encourage the network
+to learn discriminative features between positive and negative cases. Also, with the employment of contrastive learning,
+we can get rid of the pretraining task with ImageNet, which is considerably more time consuming.
+
 # Set-up
 
 - [Data preparation and preprocessing](https://github.com/hieubkvn123/COVIDNet-Implementation/tree/main/data)
@@ -57,7 +65,7 @@ python3 main.py --data_dir data/covidx/train
 	- [x] Add image augmentation in the data loader.
 		- So far the augmentation includes : Rotation, Translation, Horizontal Flip.
 - [x] Replicate the experiment result in COVID-Net baseline.
-- [ ] Implement changes and further improvements to COVID-Net.
+- [x] Implement changes and further improvements to COVID-Net.
 	- [x] Add regularization (L1 and L2) to the PEPx module and test run.
 	- [ ] Clip the logits features using L2 normalization and test run.
 	- [x] Add the Additive Angular Margin Penalty head to the logits layer.
