@@ -60,11 +60,13 @@ python3 main.py --data_dir data/covidx/train
 ImageNet or knowledge distillation) are computed and reduced to 3D using PCA and visualized as scatter plots:
 <table>
 <tr>
+<th></th>
 <th>Baseline Model</th>
 <th>Contrastive Model</th>
 </tr>
 
 <tr>
+<th>Feature embeddings</th>
 <td>
 <img src="media/embedding_baseline_model.png"/>
 </td>
@@ -72,6 +74,23 @@ ImageNet or knowledge distillation) are computed and reduced to 3D using PCA and
 <img src="media/embedding_contrastive_model.png"/>
 </td>
 </tr>
+
+<tr>
+<th>Silhouette Score</th>
+<td>0.16905051</td>
+<td>0.40909794</td>
+</tr>
+
+<tr>
+<th>Building block</td>
+<td>Xception</td>
+<td>Xception</td>
+</tr>
+
+<tr>
+<th>Selective skip conn</th>
+<td>Yes</td>
+<td>Yes</td>
 </table>
 
 
