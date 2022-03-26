@@ -88,7 +88,7 @@ ImageNet or knowledge distillation) are computed and reduced to 3D using PCA and
 </tr>
 
 <tr>
-<th>Selective skip conn</th>
+<th>Selective skip connection</th>
 <td>Yes</td>
 <td>Yes</td>
 </table>
