@@ -68,7 +68,7 @@ ImageNet or knowledge distillation) are computed and reduced to 3D using PCA and
 <tr>
 <th>Feature embeddings</th>
 <td>
-<img src="media/embedding_baseline_model.png"/>
+<img src="media/embedding_baseline_model.png?2"/>
 </td>
 <td>
 <img src="media/embedding_contrastive_model.png"/>
